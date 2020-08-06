@@ -36,6 +36,8 @@ def main():
   row0 = table_rows[0]
   cols = row0.find_all('td')
 
+  print("\n-----------AHA CPR/BLS CERTIFICATION STATUS-----------\n")
+
   full_name = cols[2].text.strip()
   print("FULL NAME: " + full_name)
 
@@ -45,7 +47,7 @@ def main():
   renewal_date = cols[4].text.strip()
   print("RENEWAL DATE: " + renewal_date)
 
-
+  print("\n-----------AHA CPR/BLS CERTIFICATION STATUS-----------\n")
 
   
 
