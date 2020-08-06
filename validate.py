@@ -168,6 +168,8 @@ def validate_dca(license_number, last_name):
   details_page_response = requests.get("https://search.dca.ca.gov" + details_page_link)
   soup_details_page = BeautifulSoup(details_page_response.text, "html.parser")
 
+  print("\n-----------CALIFORNIA DCA MEDICAL LICENSE STATUS-----------\n")
+
   full_name = soup_details_page.select("#name")[0].text
   full_name_formatted = full_name.replace("Name: ", "")
   print("FULL NAME: " + str(full_name_formatted.strip()))
@@ -187,9 +189,9 @@ def validate_dca(license_number, last_name):
   exp_date = soup_details_page.select("#expDate")[0].text
   exp_date_formatted = exp_date.replace("Expiration Date: ", "")
   print("EXP DATE: " + str(exp_date_formatted.strip()))
+
+  print("\n-----------CALIFORNIA DCA MEDICAL LICENSE STATUS-----------\n")
   
-
-
 
 if __name__ == "__main__":
     main()
