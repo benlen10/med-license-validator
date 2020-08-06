@@ -9,12 +9,17 @@ from bs4 import BeautifulSoup
 # USAGE EXAMPLE #2: python3 validate.py AHA 195506016954
 # USAGE EXAMPLE #3: python3 validate.py ARC 10FMU9
 # USAGE EXAMPLE #4: python3 validate.py DCA "G 50925" DOEMENY
+# USAGE EXAMPLE #4: python3 validate.py --help
+
 
 def main():
+    """
+    Entry point for the program
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('license_type', help='License type (EMT, AHA, ARC or RN)')
     parser.add_argument('license_number', help='License number')
-    parser.add_argument('last_name', help='Last name (Only for DCA licenses)')
+    parser.add_argument('--last_name', help='Last name (Only required for DCA licenses)')
     args = parser.parse_args()
     license_type = args.license_type
     license_number = args.license_number
@@ -31,6 +36,10 @@ def main():
 
 
 def validate_esma(license_number):
+    """
+    Validate EMT licenses against the CA EMSA database
+    :param license_number: State issued EMT license number
+    """
     session_url = 'https://emsverification.emsa.ca.gov/Verification/'
     session = requests.Session()
     r = session.get(session_url)
@@ -81,6 +90,10 @@ def validate_esma(license_number):
 
 
 def validate_aha(license_number):
+    """
+    Validate AHA BLS/CPR cert against the AHA database
+    :param license_number: AHA BLS card number
+    """
     url = "https://ecards.heart.org/Student/MyeCards/VerifyECards"
 
     payload = 'codes={}'.format(license_number)
@@ -89,7 +102,6 @@ def validate_aha(license_number):
         'X-Requested-With': 'XMLHttpRequest',
         'Request-Id': '|U0Hjw.ACgYH',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
         'Request-Context': 'appId=cid-v1:d39741ef-33b3-4dd6-bd05-8a42831df1ef'
     }
 
@@ -118,13 +130,16 @@ def validate_aha(license_number):
 
 
 def validate_arc(license_number):
-    url = "https://www.redcross.org/on/demandware.store/Sites-RedCross-Site/default/Certificates-SearchCerts?certnumber={}&format=ajax".format(
-        license_number)
+    """
+    Validate BLS/CPR cert against the American Red Cross database
+    :param license_number: AHA card number
+    """
+    url = "https://www.redcross.org/on/demandware.store/Sites-RedCross-Site/default/Certificates-SearchCerts" \
+          "?certnumber={}&format=ajax".format(license_number)
 
     payload = {}
     headers = {
         'Accept': 'text/html, */*; q=0.01',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
         'X-Requested-With': 'XMLHttpRequest'
     }
 
@@ -150,6 +165,11 @@ def validate_arc(license_number):
 
 
 def validate_dca(license_number, last_name):
+    """
+    Validate medical license against the CA state DCA database
+    :param license_number: State issued license number
+    :param last_name: Last name as shown on provider license card
+    """
     url = "https://search.dca.ca.gov/results"
 
     license_number_formatted = license_number.replace(" ", "%20")
@@ -160,8 +180,8 @@ def validate_dca(license_number, last_name):
         'Upgrade-Insecure-Requests': '1',
         'Origin': 'https://search.dca.ca.gov',
         'Content-Type': 'application/x-www-form-urlencoded',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,'
+                  'application/signed-exchange;v=b3;q=0.9 '
     }
 
     response = requests.request("POST", url, headers=headers, data=payload)
