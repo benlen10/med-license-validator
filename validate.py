@@ -124,8 +124,17 @@ def validate_arc(license_number):
 
   soup_results_page = BeautifulSoup(response.text, "html.parser")
 
+  full_name = soup_results_page.select(".col-st-name")[1].text
+  print("FULL NAME: " + str(full_name))
+  
   cert_type = soup_results_page.select(".col-class")[1].text
   print("CERT TYPE: " + str(cert_type))
+
+  completion_date = soup_results_page.select(".col-date")[1].text
+  print("COMPLETION DATE: " + str(completion_date))
+
+  cert_status = soup_results_page.select(".col-status")[1].text
+  print("CERT STATUS: " + str(cert_status))
 
 
 
