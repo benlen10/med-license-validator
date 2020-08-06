@@ -38,6 +38,8 @@ def main():
   details_page_response = session.get(SESSION_URL + find_results["href"])
   soup_details_page = BeautifulSoup(details_page_response.text,"html.parser")
 
+  print("\n-----------CALIFORNIA EMSA CENTRAL REGISTRY LICENSE STATUS-----------\n")
+
   full_name = soup_details_page.find('span', id="_ctl25__ctl1_full_name").text
   print("FULL NAME: " + str(full_name))
 
@@ -52,6 +54,9 @@ def main():
 
   exp_date = soup_details_page.find('span', id="_ctl32__ctl1_expiry").text
   print("EXP DATE: " + str(exp_date))
+  
+  print("\n-----------CALIFORNIA EMSA CENTRAL REGISTRY LICENSE STATUS-----------\n")
+
   
 
 
