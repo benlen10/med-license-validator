@@ -7,14 +7,17 @@ from bs4 import BeautifulSoup
 # USAGE EXAMPLE #1: python3 validate.py EMT E142304
 # USAGE EXAMPLE #2: python3 validate.py AHA 195506016954
 # USAGE EXAMPLE #3: python3 validate.py ARC 10FMU9
+# USAGE EXAMPLE #4: python3 validate.py DCA "G 50925" DOEMENY
 
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument('license_type', help='License type (EMT, AHA, ARC or RN)')
   parser.add_argument('license_number', help='License number')
+  parser.add_argument('last_name', help='Last name (Only for DCA licenses)')
   args = parser.parse_args()
   license_type = args.license_type
   license_number = args.license_number
+  last_name = args.last_name
 
   if license_type == "EMT":
     validate_esma(license_number)
@@ -22,6 +25,8 @@ def main():
     validate_aha(license_number)
   if license_type == "ARC":
     validate_arc(license_number)
+  if license_type == "DCA":
+    validate_dca(license_number, last_name)
 
 def validate_esma(license_number):
   session_url = 'https://emsverification.emsa.ca.gov/Verification/'
@@ -139,6 +144,32 @@ def validate_arc(license_number):
   print("CERT STATUS: " + str(cert_status))
 
   print("\n-----------AMERICAN RED CROSS CERTIFICATION STATUS-----------\n")
+
+
+def validate_dca(license_number, last_name):
+  url = "https://search.dca.ca.gov/results"
+
+  license_number_formatted = license_number.replace(" ", "%20")
+
+  payload = 'boardCode=0&busName=&firstName=&lastName={}&licenseNumber={}&licenseType=0&registryNumber='.format(last_name, license_number_formatted)
+  headers = {
+    'Upgrade-Insecure-Requests': '1',
+    'Origin': 'https://search.dca.ca.gov',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
+  }
+
+  response = requests.request("POST", url, headers=headers, data = payload)
+  soup_results_page = BeautifulSoup(response.text, "html.parser")
+
+  #print("RAW: " + response.text)
+
+  full_name = soup_results_page.find_all("h3")[0].text
+  print("FULL NAME: " + str(full_name))
+  
+  license_number = soup_results_page.find(id="lic0").text
+  print("LICENSE NUMBER: " + str(license_number))
 
 
 if __name__ == "__main__":
