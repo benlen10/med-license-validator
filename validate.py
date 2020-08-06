@@ -43,11 +43,10 @@ def main():
 
   license_status = soup_details_page.find('span', id="_ctl32__ctl1_status").text
   print("LICENSE STATUS: " + str(license_status))
+
+  license_type = soup_details_page.find('span', id="_ctl32__ctl1_license_type").text
+  print("LICENSE TYPE: " + str(license_type))
   
-
-
-
-
 
 
 if __name__ == "__main__":
