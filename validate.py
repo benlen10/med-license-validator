@@ -49,6 +49,9 @@ def main():
 
   issue_date = soup_details_page.find('span', id="_ctl32__ctl1_issue_date").text
   print("ISSUE DATE: " + str(issue_date))
+
+  exp_date = soup_details_page.find('span', id="_ctl32__ctl1_expiry").text
+  print("EXP DATE: " + str(exp_date))
   
 
 
