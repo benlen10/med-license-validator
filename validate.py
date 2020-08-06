@@ -122,7 +122,12 @@ def validate_arc(license_number):
 
   response = requests.request("GET", url, headers=headers, data = payload)
 
-  print(response.text.encode('utf8'))
+  soup_results_page = BeautifulSoup(response.text, "html.parser")
+
+  cert_type = soup_results_page.select(".col-class")[1].text
+  print("CERT TYPE: " + str(cert_type))
+
+
 
 
 if __name__ == "__main__":
