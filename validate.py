@@ -171,6 +171,10 @@ def validate_dca(license_number, last_name):
   full_name = soup_details_page.select("#name")[0].text
   full_name_formatted = full_name.replace("Name: ", "")
   print("FULL NAME: " + str(full_name_formatted))
+
+  license_type = soup_details_page.select("#licType")[0].text
+  license_type_formatted = license_type.replace("License Type: ", "")
+  print("LICENSE TYPE: " + str(license_type_formatted))
   
 
 
