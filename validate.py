@@ -46,6 +46,9 @@ def main():
 
   license_type = soup_details_page.find('span', id="_ctl32__ctl1_license_type").text
   print("LICENSE TYPE: " + str(license_type))
+
+  issue_date = soup_details_page.find('span', id="_ctl32__ctl1_issue_date").text
+  print("ISSUE DATE: " + str(issue_date))
   
 
 
