@@ -42,6 +42,9 @@ def main():
   license_status = cols[3].text.strip()
   print("LICENSE STATUS: " + license_status)
 
+  renewal_date = cols[4].text.strip()
+  print("RENEWAL DATE: " + renewal_date)
+
 
 
   
