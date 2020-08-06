@@ -28,7 +28,16 @@ def main():
 
   response = requests.request("POST", url, headers=headers, data = payload)
 
-  print(response.text.encode('utf8'))
+  soup_results_page = BeautifulSoup(response.text,"html.parser")
+  table = soup_results_page.find('table', id="tblECards")
+  print("SOUP RESULTS: " + str(table))
+  table_body = table.find('tbody')
+  table_rows = table_body.find_all('tr')
+  row0 = table_rows[0]
+  cols = row0.find_all('td')
+
+  full_name = cols[2].text.strip()
+  print("FULL NAME: " + full_name)
 
   
 
