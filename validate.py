@@ -175,6 +175,10 @@ def validate_dca(license_number, last_name):
   license_type = soup_details_page.select("#licType")[0].text
   license_type_formatted = license_type.replace("License Type: ", "")
   print("LICENSE TYPE: " + str(license_type_formatted))
+
+  license_status = soup_details_page.select("#primaryStatus")[0].text
+  license_status_formatted = license_status.replace("Primary Status: ", "")
+  print("LICENSE STATUS: " + str(license_status_formatted.strip()))
   
 
 
