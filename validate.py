@@ -6,10 +6,11 @@ from bs4 import BeautifulSoup
 
 # USAGE EXAMPLE #1: python3 validate.py EMT E142304
 # USAGE EXAMPLE #2: python3 validate.py AHA 195506016954
+# USAGE EXAMPLE #3: python3 validate.py ARC 10FMU9
 
 def main():
   parser = argparse.ArgumentParser()
-  parser.add_argument('license_type', help='License type (EMT, AHA or RN)')
+  parser.add_argument('license_type', help='License type (EMT, AHA, ARC or RN)')
   parser.add_argument('license_number', help='License number')
   args = parser.parse_args()
   license_type = args.license_type
@@ -19,6 +20,8 @@ def main():
     validate_esma(license_number)
   if license_type == "AHA":
     validate_aha(license_number)
+  if license_type == "ARC":
+    validate_arc(license_number)
 
 def validate_esma(license_number):
   session_url = 'https://emsverification.emsa.ca.gov/Verification/'
@@ -105,6 +108,21 @@ def validate_aha(license_number):
   print("RENEWAL DATE: " + renewal_date)
 
   print("\n-----------AHA CPR/BLS CERTIFICATION STATUS-----------\n")
+
+
+def validate_arc(license_number):
+  url = "https://www.redcross.org/on/demandware.store/Sites-RedCross-Site/default/Certificates-SearchCerts?certnumber={}&format=ajax".format(license_number)
+
+  payload = {}
+  headers = {
+    'Accept': 'text/html, */*; q=0.01',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
+    'X-Requested-With': 'XMLHttpRequest'
+  }
+
+  response = requests.request("GET", url, headers=headers, data = payload)
+
+  print(response.text.encode('utf8'))
 
 
 if __name__ == "__main__":
