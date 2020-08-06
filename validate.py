@@ -170,15 +170,23 @@ def validate_dca(license_number, last_name):
 
   full_name = soup_details_page.select("#name")[0].text
   full_name_formatted = full_name.replace("Name: ", "")
-  print("FULL NAME: " + str(full_name_formatted))
+  print("FULL NAME: " + str(full_name_formatted.strip()))
 
   license_type = soup_details_page.select("#licType")[0].text
   license_type_formatted = license_type.replace("License Type: ", "")
-  print("LICENSE TYPE: " + str(license_type_formatted))
+  print("LICENSE TYPE: " + str(license_type_formatted.strip()))
 
   license_status = soup_details_page.select("#primaryStatus")[0].text
   license_status_formatted = license_status.replace("Primary Status: ", "")
   print("LICENSE STATUS: " + str(license_status_formatted.strip()))
+
+  issue_date = soup_details_page.select("#issueDate")[0].text
+  issue_date_formatted = issue_date.replace("Issuance Date: ", "")
+  print("ISSUE DATE: " + str(issue_date_formatted.strip()))
+
+  exp_date = soup_details_page.select("#expDate")[0].text
+  exp_date_formatted = exp_date.replace("Expiration Date: ", "")
+  print("EXP DATE: " + str(exp_date_formatted.strip()))
   
 
 
