@@ -124,6 +124,8 @@ def validate_arc(license_number):
 
   soup_results_page = BeautifulSoup(response.text, "html.parser")
 
+  print("\n-----------AMERICAN RED CROSS CERTIFICATION STATUS-----------\n")
+
   full_name = soup_results_page.select(".col-st-name")[1].text
   print("FULL NAME: " + str(full_name))
   
@@ -136,7 +138,7 @@ def validate_arc(license_number):
   cert_status = soup_results_page.select(".col-status")[1].text
   print("CERT STATUS: " + str(cert_status))
 
-
+  print("\n-----------AMERICAN RED CROSS CERTIFICATION STATUS-----------\n")
 
 
 if __name__ == "__main__":
