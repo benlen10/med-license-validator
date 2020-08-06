@@ -162,14 +162,17 @@ def validate_dca(license_number, last_name):
 
   response = requests.request("POST", url, headers=headers, data = payload)
   soup_results_page = BeautifulSoup(response.text, "html.parser")
-
-  #print("RAW: " + response.text)
-
-  full_name = soup_results_page.find_all("h3")[0].text
-  print("FULL NAME: " + str(full_name))
   
-  license_number = soup_results_page.find(id="lic0").text
-  print("LICENSE NUMBER: " + str(license_number))
+  details_page_link = soup_results_page.select("#mD0")[0]["href"]
+
+  details_page_response = requests.get("https://search.dca.ca.gov" + details_page_link)
+  soup_details_page = BeautifulSoup(details_page_response.text, "html.parser")
+
+  full_name = soup_details_page.select("#name")[0].text
+  full_name_formatted = full_name.replace("Name: ", "")
+  print("FULL NAME: " + str(full_name_formatted))
+  
+
 
 
 if __name__ == "__main__":
