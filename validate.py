@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 # USAGE EXAMPLE #1: python3 validate.py EMT E142304
 # USAGE EXAMPLE #2: python3 validate.py AHA 195506016954
 # USAGE EXAMPLE #3: python3 validate.py ARC 10FMU9
-# USAGE EXAMPLE #4: python3 validate.py DCA "G 50925" DOEMENY
+# USAGE EXAMPLE #4: python3 validate.py DCA "G 50925" --last_name DOEMENY
 # USAGE EXAMPLE #4: python3 validate.py --help
 
 
@@ -102,6 +102,8 @@ def validate_aha(license_number):
         'X-Requested-With': 'XMLHttpRequest',
         'Request-Id': '|U0Hjw.ACgYH',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                      'Chrome/84.0.4147.105 Safari/537.36',
         'Request-Context': 'appId=cid-v1:d39741ef-33b3-4dd6-bd05-8a42831df1ef'
     }
 
