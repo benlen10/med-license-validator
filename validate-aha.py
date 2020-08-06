@@ -39,6 +39,11 @@ def main():
   full_name = cols[2].text.strip()
   print("FULL NAME: " + full_name)
 
+  license_status = cols[3].text.strip()
+  print("LICENSE STATUS: " + license_status)
+
+
+
   
 
 
