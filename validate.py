@@ -32,14 +32,19 @@ def main():
 
   response = session.post(url=r.url, data=item_request_body, headers={"Referer": r.url})
 
-  response_text = str(response.text.encode('utf8'))
+  soup_results_page = BeautifulSoup(response.text,"html.parser")
+  find_results = soup_results_page.find('a', id="datagrid_results__ctl3_hl")
 
-  license_status = "NOT ACTIVE"
-  if "Active" in response_text:
-    license_status = "ACTIVE"
-   
+  details_page_response = session.get(SESSION_URL + find_results["href"])
+  soup_details_page = BeautifulSoup(details_page_response.text,"html.parser")
 
-  print("License number {} is {}".format(license_number, license_status))
+  full_name = soup_details_page.find('span', id="_ctl25__ctl1_full_name").text
+  print("FULL NAME: " + str(full_name))
+
+  license_status = soup_details_page.find('span', id="_ctl32__ctl1_status").text
+  print("LICENSE STATUS: " + str(license_status))
+  
+
 
 
 
