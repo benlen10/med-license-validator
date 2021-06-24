@@ -11,18 +11,19 @@ def lambda_handler(event, context):
     license_number = event["license_number"]
     last_name = event["last_name"]
 
+    license_status = "NA"
     if license_type == "EMT":
-        validate_esma(license_number)
+        license_status = validate_esma(license_number)
     if license_type == "AHA":
-        validate_aha(license_number)
+        license_status = validate_aha(license_number)
     if license_type == "ARC":
-        validate_arc(license_number)
+        license_status = validate_arc(license_number)
     if license_type == "DCA":
-        validate_dca(license_number, last_name)
+        license_status = validate_dca(license_number, last_name)
 
     return {
         'statusCode': 200,
-        'body': json.dumps('Lambda function executed successfully')
+        'body': json.dumps(license_status)
     }
 
 
@@ -81,6 +82,7 @@ def validate_esma(license_number):
     print("EXP DATE: " + str(exp_date))
 
     print("\n-----------CALIFORNIA EMSA CENTRAL REGISTRY LICENSE STATUS-----------\n")
+    return license_status
 
 
 def validate_aha(license_number):
@@ -124,6 +126,7 @@ def validate_aha(license_number):
     print("RENEWAL DATE: " + renewal_date)
 
     print("\n-----------AHA CPR/BLS CERTIFICATION STATUS-----------\n")
+    return license_status
 
 
 def validate_arc(license_number):
@@ -161,6 +164,7 @@ def validate_arc(license_number):
     print("CERT STATUS: " + str(cert_status))
 
     print("\n-----------AMERICAN RED CROSS CERTIFICATION STATUS-----------\n")
+    return cert_status
 
 
 def validate_dca(license_number, last_name):
@@ -216,4 +220,4 @@ def validate_dca(license_number, last_name):
     print("EXP DATE: " + str(exp_date_formatted.strip()))
 
     print("\n-----------CALIFORNIA DCA MEDICAL LICENSE STATUS-----------\n")
-
+    return license_status

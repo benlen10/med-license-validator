@@ -131,3 +131,4 @@ dmypy.json
 
 .vscode/*
 aws-lambda-layer/lambda-layer/*
+.DS_Store
