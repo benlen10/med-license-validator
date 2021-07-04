@@ -1,31 +1,77 @@
 import json
 import requests
 from bs4 import BeautifulSoup
+import logging
+
+# Initalize logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# License type constants
+EMT = "EMT"
+AHA = "AHA"
+ARC = "ARC"
+DCA = "DCA"
+
+# Lambda event key constants
+LICENSE_TYPE = "license_type"
+LICENSE_NUMBER = "license_number"
+LAST_NAME = "last_name"
+
+
+# Message constants
+LAMBDA_SUCCESS_MESSAGE = "License information successfully retrieved"
+INVALID_LICENSE_TYPE_MESSAGE = "Invalid or unsupported license type. Allowed values are: EMT, AHA, ARC or DCA"
+MISSING_LICENSE_TYPE = "Missing required key: license_type"
+MISSING_LICENSE_NUMBER = "Missing required key: license_number"
+MISSING_LAST_NAME_DCA_MESSAGE = "last_name is required for DCA license lookups"
+
 
 
 def lambda_handler(event, context):
     """
-    Entry point for the program
+    Lambda handler invoked by api gateway event
     """
-    license_type = event["license_type"]
-    license_number = event["license_number"]
-    last_name = event["last_name"]
+    logger.info("Lambda event: " + json.dumps(event))
+    license_type = event.get(LICENSE_TYPE, None)
+    license_number = event.get(LICENSE_NUMBER, None)
+    last_name = event.get(LAST_NAME, None)
 
-    license_status = "NA"
+    # Validation checks
+    if license_type is None:
+        return build_response(400, MISSING_LICENSE_TYPE)
+    elif license_number is None:
+        return build_response(400, MISSING_LICENSE_NUMBER)
+    elif license_type == AHA and last_name is None:
+        return build_response(400, MISSING_LAST_NAME_DCA_MESSAGE)
+
+
     if license_type == "EMT":
-        license_status = validate_esma(license_number)
-    if license_type == "AHA":
-        license_status = validate_aha(license_number)
-    if license_type == "ARC":
-        license_status = validate_arc(license_number)
-    if license_type == "DCA":
-        license_status = validate_dca(license_number, last_name)
+        return validate_esma(license_number)
+    elif license_type == "AHA":
+        return validate_aha(license_number)
+    elif license_type == "ARC":
+        return validate_arc(license_number)
+    elif license_type == "DCA":
+        return validate_dca(license_number, last_name)
+    else:
+        return build_response(400, INVALID_LICENSE_TYPE_MESSAGE)
+    
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps(license_status)
+def build_response(status_code, message, license_status ="null", exp_date = "null"):
+    response = {
+        "statusCode": status_code,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": json.dumps({
+            "status ": message,
+            "license_status ": license_status,
+            "exp_date": exp_date
+        })
     }
-
+    logger.info("Lambda response: " + json.dumps(response))
+    return response
 
 
 def validate_esma(license_number):
@@ -82,7 +128,7 @@ def validate_esma(license_number):
     print("EXP DATE: " + str(exp_date))
 
     print("\n-----------CALIFORNIA EMSA CENTRAL REGISTRY LICENSE STATUS-----------\n")
-    return license_status
+    return build_response(200, LAMBDA_SUCCESS_MESSAGE, str(license_status), str(exp_date))
 
 
 def validate_aha(license_number):
@@ -126,7 +172,7 @@ def validate_aha(license_number):
     print("RENEWAL DATE: " + renewal_date)
 
     print("\n-----------AHA CPR/BLS CERTIFICATION STATUS-----------\n")
-    return license_status
+    return build_response(200, LAMBDA_SUCCESS_MESSAGE, str(license_status), str(renewal_date))
 
 
 def validate_arc(license_number):
@@ -164,7 +210,7 @@ def validate_arc(license_number):
     print("CERT STATUS: " + str(cert_status))
 
     print("\n-----------AMERICAN RED CROSS CERTIFICATION STATUS-----------\n")
-    return cert_status
+    return build_response(200, LAMBDA_SUCCESS_MESSAGE, str(cert_status), "NA")
 
 
 def validate_dca(license_number, last_name):
@@ -220,4 +266,4 @@ def validate_dca(license_number, last_name):
     print("EXP DATE: " + str(exp_date_formatted.strip()))
 
     print("\n-----------CALIFORNIA DCA MEDICAL LICENSE STATUS-----------\n")
-    return license_status
+    return build_response(200, LAMBDA_SUCCESS_MESSAGE, str(license_status), str(exp_date_formatted.strip()))
